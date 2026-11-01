@@ -263,7 +263,7 @@ button{font:inherit}
 .btn svg{width:1.1em;height:1.1em;flex:none}
 .btn-solid{background:var(--madder);border-color:#D9A15A;color:#FFF5E6;box-shadow:0 10px 30px -10px rgba(168,40,58,.7)}
 .btn-solid:hover{background:#8E1F31}
-.link-maps{display:inline-flex;align-items:center;gap:6px;color:var(--madder);font:italic 500 1.05rem/1 var(--serif);text-decoration:none;border-bottom:1px solid rgba(168,40,58,.35);padding:6px 0 3px;min-height:32px}
+.link-maps{display:inline-flex;align-items:center;gap:6px;color:var(--madder);font:italic 500 1.05rem/1 var(--serif);text-decoration:none;border-bottom:1px solid rgba(168,40,58,.35);padding:6px 0 3px;min-height:44px}
 .link-maps svg{width:14px;height:14px}
 .reveal{transition:opacity 1s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
 .js .reveal:not(.in){opacity:0;transform:translateY(26px)}
@@ -352,7 +352,7 @@ section{position:relative;scroll-margin-top:0}
 .divine .card-logo{width:clamp(50px,12vw,70px);margin:clamp(56px,14.5vw,112px) auto 0}
 .deity{margin:0;text-align:center}
 .deity img{display:block;height:clamp(68px,18vw,96px);width:auto;margin:0 auto 6px}
-.deity figcaption{font:600 clamp(.6rem,2.4vw,.82rem)/1.3 var(--serif);letter-spacing:0;white-space:nowrap;color:#8E1F31}
+.deity figcaption{font:600 clamp(.66rem,2.5vw,.82rem)/1.3 var(--serif);letter-spacing:0;white-space:nowrap;color:#8E1F31}
 .cordial{margin-bottom:clamp(22px,5vw,34px)!important;max-width:30em;margin-left:auto!important;margin-right:auto!important;font:500 clamp(.78rem,2.9vw,.92rem)/1.7 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--gold-text);margin:6px 0 4px}
 .person{margin:2px 0}
 .pname-big{font:italic 500 clamp(2.9rem,12vw,4.8rem)/1.05 var(--serif);margin:0;color:#A4741C}
@@ -416,6 +416,7 @@ section{position:relative;scroll-margin-top:0}
   background:radial-gradient(circle at 35% 30%,#FFFBF0,#F1DFC0 70%,#D8BA85);border:1.5px solid #C9A54A;box-shadow:0 8px 20px -6px rgba(0,0,0,.45),inset 0 0 0 3px rgba(255,255,255,.5)}
 .fab svg{width:24px;height:24px}
 .fab[hidden]{display:none}
+@media (max-width:399px){.fab-stack{right:8px;bottom:calc(10px + env(safe-area-inset-bottom));gap:8px}.fab{width:44px;height:44px}.fab svg{width:21px;height:21px}.music-fab .mute-slash{inset:10px}}
 .fab[aria-pressed="true"]{color:#FFF5E6;background:radial-gradient(circle at 35% 30%,#C94A62,#A8283A 70%,#7D1A2B)}
 .menu-panel{position:fixed;right:14px;bottom:calc(140px + env(safe-area-inset-bottom));z-index:81;width:min(290px,calc(100vw - 28px));
   background:var(--parchment);color:var(--text);border-radius:14px;padding:18px 16px 14px;box-shadow:0 20px 50px -12px rgba(0,0,0,.55);border:1px solid #D9BE7E}
