@@ -1636,7 +1636,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
   ["1", "2"].forEach(function (k) {
     var rows = C.LINEAGE["partner" + k] || [];
     $("lineage" + k).innerHTML = rows.map(function (l, i) {
-      var cls = i === rows.length - 1 ? "lin1" : "lin2";
+      var cls = "lin1";   // every lineage line gets the same red highlight
       return '<p class="' + cls + '"><span class="pre">' + esc(l.prefix) + "</span> " +
         l.names.map(function (n) { return '<span class="nw">' + esc(n) + "</span>"; }).join(' <span class="and">and</span> ') + "</p>";
     }).join("");
