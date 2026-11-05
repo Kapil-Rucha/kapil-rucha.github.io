@@ -25,11 +25,11 @@ window.CONFIG = {
   // Each name stays on one line; the whole line wraps between names, never inside one
   LINEAGE: {
     partner1: [
-      { prefix: "S/o", names: ["Mrs. Leena", "Mr. Shamsunder Rochiram Gulwani"] },
+      { prefix: "S/O", names: ["Mrs. Leena", "Mr. Shamsunder Rochiram Gulwani"] },
       { prefix: "Grandson of", names: ["Late Mrs. Gunwanti", "Late Dr. Rochiram Gulwani"] }
     ],
     partner2: [
-      { prefix: "D/O", names: ["Mrs. Monali", "Mr. Rajesh Vitthal Nagare"] }
+      { prefix: "D/O", names: ["Mrs. Monali", "Mr. Rajesh Vitthal Nagare"], br: true }   // br: start a new line after "and"
     ]
   },
   FAMILY_LINE: "Gulwani and Nagare Family",   // under "Sharing the joy" at the foot of the card
@@ -69,7 +69,7 @@ window.CONFIG = {
       date: "4th December 2026", time: "6:00 pm onwards",
       address: "Boat Club Rd, Bund Garden, Sangamvadi, Pune, Maharashtra 411001",
       mapsLink: "https://maps.app.goo.gl/tXy83PxkSVo9GkqY9" },
-    { title: "Wedding and Reception", icon: "mandap", name: "Marigold Banquets", hall: "Goldenrod",
+    { title: "Wedding and Reception", icon: "mandap", name: "Marigold Banquets", hall: "Goldenrod Hall",
       date: "6th December 2026", time: "10:30 am onwards",
       address: "Windmill Village, Bavdhan, Pune, Maharashtra 411021",
       mapsLink: "https://maps.app.goo.gl/xpNxorBLmNHiVkTE7" }
@@ -403,7 +403,6 @@ section{position:relative;scroll-margin-top:0}
 /* ================= FLOATING CONTROLS ================= */
 .fab-stack{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:80;display:flex;flex-direction:column;gap:12px}
 .intro-on .fab-stack{z-index:110}
-.intro-on #menuBtn{display:none}
 .music-fab{position:relative}
 .music-fab .mute-slash{position:absolute;inset:13px;width:24px;height:24px}
 .music-fab[aria-pressed="true"] .mute-slash{display:none}
@@ -1176,14 +1175,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
 <!-- floating controls -->
 <div class="fab-stack" id="fabs">
   <button type="button" class="fab music-fab" id="musicBtn" aria-pressed="false" hidden><svg aria-hidden="true"><use href="#i-music"/></svg><svg class="mute-slash" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4L20 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="visually-hidden" data-i18n="music_play">Play music</span></button>
-  <button type="button" class="fab" id="menuBtn" aria-expanded="false" aria-controls="menuPanel"><svg aria-hidden="true"><use href="#i-compass"/></svg><span class="visually-hidden" data-i18n="menu">Menu</span></button>
 </div>
-<nav class="menu-panel" id="menuPanel" aria-label="Sections" hidden>
-  <ul>
-    <li><a href="#invite" data-i18n="nav_invite">Invitation</a></li>
-    <li><a href="#events">The Celebrations</a></li>
-  </ul>
-</nav>
 
 <main id="main">
   <!-- ======================= 2. INVITATION CARD ======================= -->
@@ -1220,7 +1212,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
           <div class="lineage" id="lineage2"></div>
         </div>
         <div class="rule" aria-hidden="true"><svg viewBox="-12 -8 24 16"><use href="#rosette" x="-8" y="-8" width="16" height="16"/></svg></div>
-        <a class="btn" href="#events" data-i18n="view_events">View the celebrations</a>
         <p class="joy">Sharing the joy<button type="button" class="hint-btn feather joy-feather" data-hint="feather"><svg viewBox="0 0 40 140" aria-hidden="true" id="featherSvg"></svg></button></p>
         <p class="joy-fam" id="familyLine"></p>
         <svg class="corner-lotus l" viewBox="-40 -36 80 56" aria-hidden="true"><use href="#lotus"/></svg>
@@ -1619,7 +1610,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
     $("lineage" + k).innerHTML = rows.map(function (l, i) {
       var cls = "lin1";   // every lineage line gets the same red highlight
       return '<p class="' + cls + '"><span class="pre">' + esc(l.prefix) + "</span> " +
-        l.names.map(function (n) { return '<span class="nw">' + esc(n) + "</span>"; }).join(' <span class="and">and</span> ') + "</p>";
+        l.names.map(function (n) { return '<span class="nw">' + esc(n) + "</span>"; }).join(' <span class="and">and</span>' + (l.br ? "<br>" : " ")) + "</p>";
     }).join("");
   });
   $("familyLine").textContent = C.FAMILY_LINE;
@@ -1777,13 +1768,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
     applyLanguage();
   });
 
-  /* ---------------- floating menu & music ---------------- */
-  var menuBtn = $("menuBtn"), panel = $("menuPanel");
-  var setMenu = function (open) { panel.hidden = !open; menuBtn.setAttribute("aria-expanded", String(open)); if (open) panel.querySelector("a").focus(); };
-  menuBtn.addEventListener("click", function () { setMenu(panel.hidden); });
-  panel.addEventListener("click", function (e) { if (e.target.closest("a")) setMenu(false); });
-  doc.addEventListener("keydown", function (e) { if (e.key === "Escape" && !panel.hidden) { setMenu(false); menuBtn.focus(); } });
-  doc.addEventListener("click", function (e) { if (!panel.hidden && !panel.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false); });
+  /* ---------------- background music ---------------- */
   /* ---------------- background music: on by default, gapless loop via Web Audio ----------------
      Browsers refuse to play sound until the visitor has interacted with the page, so the
      track is loaded and started straight away (silently held by the browser), and the very
