@@ -68,7 +68,7 @@ window.CONFIG = {
       date: "4th December 2026", time: "6:00 pm onwards",
       address: "Boat Club Rd, Bund Garden, Sangamvadi, Pune, Maharashtra 411001",
       mapsLink: "https://maps.app.goo.gl/tXy83PxkSVo9GkqY9" },
-    { title: "Wedding and Reception", icon: "mandap", name: "Marigold Banquets",
+    { title: "Wedding and Reception", icon: "mandap", name: "Golden Marigold",
       date: "6th December 2026", time: "11:00 am onwards",
       address: "Windmill Village, Bavdhan, Pune, Maharashtra 411021",
       mapsLink: "https://maps.app.goo.gl/xpNxorBLmNHiVkTE7" }
@@ -1186,7 +1186,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
   <ul>
     <li><a href="#invite" data-i18n="nav_invite">Invitation</a></li>
     <li><a href="#events">The Celebrations</a></li>
-    <li><a href="#story" data-i18n="nav_story">Our Story</a></li>
   </ul>
 </nav>
 
@@ -1252,24 +1251,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
     </div>
     <div id="eventPages"></div>
     <button type="button" class="hint-btn know-ele" data-hint="mirrorwork"><svg viewBox="0 0 200 150" aria-hidden="true" data-elephant></svg></button>
-  </section>
-
-  <!-- ======================= 5. STORY ======================= -->
-  <section class="story light" id="story" aria-labelledby="storyTitle">
-    <div class="garden-bg" aria-hidden="true" id="gardenBg"></div>
-    <div class="story-copy">
-      <span class="eyebrow" data-i18n="story_eyebrow">A love story</span>
-      <h2 class="title" id="storyTitle" data-i18n="story_title">Meet the Couple</h2>
-      <div class="rule" aria-hidden="true"><svg viewBox="-12 -8 24 16"><use href="#rosette" x="-8" y="-8" width="16" height="16"/></svg></div>
-      <div class="couple-photo">
-        <span class="cp-outer"><span class="cp-inner" id="couplePhoto"></span></span>
-      </div>
-      <div id="storyText"></div>
-    </div>
-    <!-- the curtain: ajrak on Kapil's side, Paithani on Rucha's -->
-    <div class="stage-curtain l" aria-hidden="true"><svg><rect width="100%" height="100%" fill="url(#paithani-curtain)"/></svg></div>
-    <div class="stage-curtain r" aria-hidden="true"><svg><rect width="100%" height="100%" fill="url(#ajrak-cloth-lg)"/></svg></div>
-    <div class="stage-valance" aria-hidden="true"></div>
   </section>
 
   <!-- ======================= FINALE: the city lights up ======================= -->
@@ -1653,9 +1634,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
     .map(function (st) { return '<svg viewBox="0 0 300 260" ' + st + " data-blooms></svg>"; }).join("");
   doc.querySelectorAll("[data-blooms]").forEach(bloomsSVG);
   doc.querySelectorAll("[data-elephant]").forEach(elephantSVG);
-  $("gardenBg").innerHTML = '<svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice"><g fill="#E9D3BC">' +
-    '<rect x="300" y="200" width="600" height="120"/><path d="M380 200c0-60 40-80 60-90 20 10 60 30 60 90z M700 200c0-60 40-80 60-90 20 10 60 30 60 90z M540 200c0-80 50-110 60-120 10 10 60 40 60 120z"/></g>' +
-    '<rect x="0" y="320" width="1200" height="80" fill="#E8D9CC"/><g opacity=".7"><use href="#lotus" transform="translate(260 360) scale(1.2)"/><use href="#lotus" transform="translate(940 370) scale(1.1)"/></g></svg>';
   buildScene();
   skylineSVG($("skyline"));
   if (!reduce) {
@@ -1694,13 +1672,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
         '<svg class="ev-diya r" viewBox="-30 -46 60 60" aria-hidden="true"><use href="#diya"/></svg></article>';
     }).join("");
     observe($("eventPages").querySelectorAll(".reveal"));
-  }
-
-  function renderStory() {
-    var ph = C.COUPLE_PHOTO || {};
-    $("couplePhoto").innerHTML = ph.src ? '<img src="' + esc(ph.src) + '" alt="' + esc(ph.alt) + '" loading="lazy">' : '<span class="cp-ph">Photo coming soon</span>';
-    $("storyText").innerHTML = C.STORY.map(function (p) { return "<p>" + span(loc(p)) + "</p>"; }).join("") +
-      (C.HASHTAG ? '<p class="hashtag">' + esc(C.HASHTAG) + "</p>" : "");
   }
 
   /* ---------------- countdown ---------------- */
@@ -1802,7 +1773,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
     root.lang = TAG[k]; root.dir = rtl(k) ? "rtl" : "ltr";
     doc.querySelectorAll("[data-i18n]").forEach(function (n) { setEl(n, tr(n.dataset.i18n)); });
     doc.querySelectorAll("[data-i18n-aria]").forEach(function (n) { n.setAttribute("aria-label", txt(n.dataset.i18nAria)); });
-    renderLangs(); renderCountdown(); renderEventPages(); renderStory();
+    renderLangs(); renderCountdown(); renderEventPages();
     labelHints();
   }
   doc.addEventListener("click", function (e) {
@@ -1889,15 +1860,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
       else if (want) { if (ctx) ctx.resume().catch(function () {}); if (el) el.play().catch(function () {}); }
     });
   })();
-
-  /* ---------------- story branches part as you scroll ---------------- */
-  var story = $("story");
-  function onScroll() {
-    var r = story.getBoundingClientRect(), vh = innerHeight;
-    var p = reduce ? 1 : Math.min(1, Math.max(0, (vh - r.top) / (vh * .75) - .1));
-    story.style.setProperty("--open", p.toFixed(3));
-  }
-  addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
   /* ---------------- fireworks over the palace ---------------- */
   (function () {
