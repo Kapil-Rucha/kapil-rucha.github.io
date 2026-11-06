@@ -271,8 +271,8 @@ section{position:relative;scroll-margin-top:0}
 .intro-on .intro{display:block}
 .scene{position:absolute;inset:0;width:100%;height:100%;filter:brightness(.26) saturate(.35);transition:filter 2.6s ease, transform 1.5s cubic-bezier(.6,0,.3,1)}
 .lit .scene{filter:none}
-.scene .slide-l{transform:translateX(calc(var(--zp,0) * -140px));transition:transform .25s ease-out}
-.scene .slide-r{transform:translateX(calc(var(--zp,0) * 140px));transition:transform .25s ease-out}
+.scene .slide-l{transform:translateX(calc(var(--zp,0) * -140px))}
+.scene .slide-r{transform:translateX(calc(var(--zp,0) * 140px))}
 .intro-copy{opacity:calc(1 - var(--zp,0) * 1.6)}
 .scene .glow,.scene .flame-lit,.scene .lantern{opacity:0;transition:opacity 2s ease 1s}
 .scene .dtower .flame-lit{opacity:0;transition:opacity 1.6s ease 1.2s}
@@ -1988,14 +1988,27 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
 
     $("openInvite").addEventListener("click", enter);
     // scrolling or swiping pulls the guest toward the temple; far enough and it opens
-    var zp = 0, entered = false, ty = null;
+    // one rAF loop eases the zoom toward where the guest has scrolled, so wheel ticks and swipes glide instead of stepping
+    var zp = 0, zt = 0, zraf = 0, zlast = 0, entered = false, ty = null;
+    var zEls = [$("perchL"), $("perchR"), $("introCopy")];
+    var drawZoom = function () {
+      scene.style.transform = "scale(" + (1 + zp * .9).toFixed(4) + ")";
+      zEls.forEach(function (n) { n.style.setProperty("--zp", zp.toFixed(4)); });
+    };
+    var stepZoom = function (t) {
+      var dt = Math.min(64, t - (zlast || t - 16.7)); zlast = t;
+      zp += (zt - zp) * (1 - Math.pow(.86, dt / 16.7));
+      if (Math.abs(zt - zp) < .0005) zp = zt;
+      drawZoom();
+      zraf = zp === zt ? 0 : requestAnimationFrame(stepZoom);
+      if (!zraf) zlast = 0;
+    };
     var zoomBy = function (d) {
       if (entered || !lit) return;
-      zp = Math.max(0, Math.min(1, zp + d));
-      intro.style.setProperty("--zp", zp.toFixed(3));
-      scene.style.transition = "filter 2.6s ease, transform .25s ease-out";
-      scene.style.transform = "scale(" + (1 + zp * .9).toFixed(3) + ")";
-      if (zp >= 1) { entered = true; scene.style.transition = ""; enter(); }
+      zt = Math.max(0, Math.min(1, zt + d));
+      if (zt >= 1) { entered = true; cancelAnimationFrame(zraf); scene.style.transition = ""; enter(); return; }
+      scene.style.transition = "filter 2.6s ease";
+      if (!zraf) zraf = requestAnimationFrame(stepZoom);
     };
     intro.addEventListener("wheel", function (e) { zoomBy(e.deltaY / 900); }, { passive: true });
     intro.addEventListener("touchstart", function (e) { ty = e.touches[0].clientY; }, { passive: true });
