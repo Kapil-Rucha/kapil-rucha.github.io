@@ -1618,16 +1618,37 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
   function labelHints() {
     doc.querySelectorAll("button[data-hint]").forEach(function (b) { b.setAttribute("aria-label", loc((C.HINTS || {})[b.dataset.hint]).text); });
   }
+  function hideTip() { clearTimeout(tipTimer); tip.classList.remove("show"); }
+  // place the note beside the tapped motif (right if it fits, else left, else above/below) so it never covers it
+  function placeTip(box) {
+    var M = 10, G = 12, vw = innerWidth, vh = innerHeight;
+    tip.style.left = "0px"; tip.style.top = "0px";
+    tip.style.maxWidth = Math.min(280, vw - 2 * M) + "px";
+    var w = tip.offsetWidth, ht = tip.offsetHeight, x, y;
+    var clampY = function (v) { return Math.max(M, Math.min(vh - ht - M, v)); };
+    var clampX = function (v) { return Math.max(M, Math.min(vw - w - M, v)); };
+    if (box.right + G + w <= vw - M) { x = box.right + G; y = clampY(box.top + box.height / 2 - ht / 2); }
+    else if (box.left - G - w >= M) { x = box.left - G - w; y = clampY(box.top + box.height / 2 - ht / 2); }
+    else {
+      x = clampX(box.left + box.width / 2 - w / 2);
+      y = box.top - G - ht >= M ? box.top - G - ht : box.bottom + G + ht <= vh - M ? box.bottom + G : clampY(box.bottom + G);
+    }
+    tip.style.left = Math.round(x) + "px"; tip.style.top = Math.round(y) + "px";
+  }
   doc.addEventListener("click", function (e) {
-    var h = e.target.closest("[data-hint]"); if (!h || !C.HINTS || !C.HINTS[h.dataset.hint]) return;
+    var h = e.target.closest("[data-hint]");
+    if (!h || !C.HINTS || !C.HINTS[h.dataset.hint]) { hideTip(); return; }   // tap anywhere else closes the note
     var r = loc(C.HINTS[h.dataset.hint]), box = h.getBoundingClientRect();
-    var x = e.clientX || box.left + box.width / 2, y = e.clientY || box.top + box.height / 2;
+    if (box.width > innerWidth * 0.6 || box.height > innerHeight * 0.6) {   // very large motif (e.g. skyline): anchor to the tap point
+      var px = e.clientX || box.left + box.width / 2, py = e.clientY || box.top + box.height / 2;
+      box = { left: px - 14, right: px + 14, top: py - 14, bottom: py + 14, width: 28, height: 28 };
+    }
     setEl(tip, r);
-    tip.style.left = Math.max(12, Math.min(innerWidth - 292, x - 140)) + "px";
-    tip.style.top = (y > innerHeight - 140 ? y - 110 : y + 18) + "px";
+    placeTip(box);
     tip.classList.add("show");
-    clearTimeout(tipTimer); tipTimer = setTimeout(function () { tip.classList.remove("show"); }, 4800);
+    clearTimeout(tipTimer); tipTimer = setTimeout(hideTip, 6000);
   });
+  addEventListener("scroll", function () { if (tip.classList.contains("show")) hideTip(); }, { passive: true });
 
   /* ---------------- static renders ---------------- */
   var amp = '<span class="amp">&amp;</span>';
