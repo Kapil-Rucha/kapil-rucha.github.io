@@ -69,7 +69,7 @@ window.CONFIG = {
       address: "Boat Club Rd, Bund Garden, Sangamvadi, Pune, Maharashtra 411001",
       mapsLink: "https://maps.app.goo.gl/tXy83PxkSVo9GkqY9" },
     { title: "Wedding", icon: "mandap", name: "Marigold Banquets", hall: "Goldenrod Hall",
-      date: "6th December 2026", time: "10:00 am onwards", after: "followed by Lunch",
+      date: "6th December 2026", time: "10:00 am onwards", schedule: [["10:30 am", "Baarat"], ["11:00 am", "Vivaha Vidhi"]], after: "followed by Lunch",
       address: "Windmill Village, Bavdhan, Pune, Maharashtra 411021",
       mapsLink: "https://maps.app.goo.gl/xpNxorBLmNHiVkTE7" }
   ],
@@ -540,6 +540,11 @@ section{position:relative;scroll-margin-top:0}
 .ev-scroll h3{font:400 clamp(2.2rem,8.4vw,3.1rem)/1.2 var(--script);letter-spacing:.02em;word-spacing:.22em;color:#7A1F3A;margin:4px 0 12px}
 .ev-date{font:600 clamp(1.3rem,5vw,1.6rem)/1.2 var(--serif);letter-spacing:.08em;color:var(--madder);margin:0}
 .ev-time{font:italic 500 clamp(1.1rem,4vw,1.3rem)/1.3 var(--serif);color:var(--gold-text);margin:2px 0 0}
+.ev-sched{list-style:none;padding:0;margin:8px auto 0;display:grid;grid-template-columns:auto auto;gap:4px 14px;width:fit-content}
+.ev-sched li{display:contents}
+.ev-sched .t{font:italic 500 clamp(1.05rem,3.9vw,1.25rem)/1.35 var(--serif);color:var(--gold-text);text-align:right}
+.ev-sched .w{font:500 clamp(1.05rem,3.9vw,1.25rem)/1.35 var(--serif);color:var(--madder);text-align:left}
+.ev-sched + .ev-after{margin-top:8px}
 .ev-after{font:italic 400 clamp(1rem,3.6vw,1.12rem)/1.3 var(--serif);color:var(--text-soft);margin:2px 0 0}
 .ev-rule{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px auto}
 .ev-rule::before,.ev-rule::after{content:"";height:1px;width:70px;background:linear-gradient(90deg,transparent,#C9A54A)}
@@ -1728,7 +1733,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
         '<svg class="ev-icon" viewBox="0 0 60 56" aria-hidden="true">' + (ICONS[v.icon] || ICONS.lantern) + "</svg>" +
         "<h3>" + esc(v.title) + "</h3>" +
         '<p class="ev-date">' + esc(v.date) + "</p>" +
-        '<p class="ev-time">' + esc(v.time) + "</p>" +
+        (v.schedule ? '<ul class="ev-sched">' + v.schedule.map(function (s) { return '<li><span class="t">' + esc(s[0]) + '</span><span class="w">' + esc(s[1]) + "</span></li>"; }).join("") + "</ul>"
+          : '<p class="ev-time">' + esc(v.time) + "</p>") +
         (v.after ? '<p class="ev-after">' + esc(v.after) + "</p>" : "") +
         '<div class="ev-rule" aria-hidden="true"><svg viewBox="-12 -8 24 16"><use href="#rosette" x="-8" y="-8" width="16" height="16"/></svg></div>' +
         '<p class="ev-venue">' + esc(v.name) + "</p>" +
