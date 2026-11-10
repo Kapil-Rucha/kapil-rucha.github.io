@@ -283,6 +283,9 @@ section{position:relative;scroll-margin-top:0}
 .lit .scene .pane{fill:#FFE6A6}
 .flame{transform-box:fill-box;transform-origin:50% 100%;animation:flicker 1.6s ease-in-out infinite}
 @keyframes flicker{0%,100%{transform:scale(1,1)}30%{transform:scale(.92,1.08)}60%{transform:scale(1.05,.94)}}
+.dhwaj{transform-box:fill-box;transform-origin:0 50%;animation:dhwaj 2.6s ease-in-out infinite}
+@keyframes dhwaj{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(5deg) scaleX(.93)}}
+@media (prefers-reduced-motion:reduce){.dhwaj{animation:none}}
 .twinkle{animation:tw 3s ease-in-out infinite}
 @keyframes tw{50%{opacity:.25}}
 .vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 35%,rgba(8,4,12,.55) 100%);transition:opacity 2s}
@@ -1298,6 +1301,15 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
     P("M466 " + (tt + 8) + "V" + (tt - 14) + "Q466 " + (tt - 52) + " 600 " + (tt - 56) + "Q734 " + (tt - 52) + " 734 " + (tt - 14) + "V" + (tt + 8) + "Z", S2, { "stroke-width": "1.4" });
     [478, 722].forEach(function (x) { P("M" + (x - 12) + " " + (tt + 6) + "V" + (tt - 16) + "A12 14 0 0 1 " + (x + 12) + " " + (tt - 16) + "V" + (tt + 6) + "Z", "#D9A07A", { "stroke-width": ".8" }); });
     for (var lp = 470; lp < 730; lp += 14) P("M" + lp + " " + (tt + 8) + "q7-14 14 0z", S3, { "stroke-width": ".7" });
+    // saffron dhwaja on a gilded pole crowning the vault
+    var vt = tt - 56, fy = vt - 50;
+    P("M590 " + (vt + 2) + "q10-10 20 0z", "#D4A63A", { "stroke-width": ".8" });
+    el("path", { d: "M600 " + (vt - 3) + "V" + (fy - 4), stroke: "#8A6418", "stroke-width": "2.4", "stroke-linecap": "round" }, g);
+    C(600, fy - 6, 3, "#E9C46A", { stroke: "#8A6418", "stroke-width": ".7" });
+    var fl = el("g", { "class": "dhwaj" }, g);
+    el("path", { d: "M601 " + fy + "C614 " + (fy - 4) + " 628 " + (fy + 3) + " 644 " + (fy - 1) + "L628 " + (fy + 10) + "L642 " + (fy + 21) +
+      "C627 " + (fy + 22) + " 614 " + (fy + 15) + " 601 " + (fy + 19) + "Z", fill: "#F08A1C", stroke: "#B8500C", "stroke-width": ".9" }, fl);
+    el("path", { d: "M601 " + (fy + 4) + "C613 " + (fy + 1) + " 624 " + (fy + 7) + " 634 " + (fy + 5), fill: "none", stroke: "#FFC56B", "stroke-width": "1", opacity: ".7" }, fl);
     R(320, 282, 560, 22, S1); for (var bx = 326; bx < 876; bx += 10) C(bx, 293, 1.5, MID);
     [372, 828].forEach(function (c) {
       R(c - 32, 304, 64, 418, S2);
