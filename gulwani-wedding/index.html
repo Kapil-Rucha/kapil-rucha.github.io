@@ -209,6 +209,7 @@ window.CONFIG = {
 <meta name="twitter:description" content="Two families. Two traditions. One celebration. 6th December 2026.">
 <meta name="twitter:image" content="https://kapil-rucha.github.io/gulwani-wedding/preview-card.jpg">
 <meta name="theme-color" content="#141A3E">
+<meta name="color-scheme" content="only light">
 
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -232,6 +233,9 @@ html{-webkit-text-size-adjust:100%}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 body{font-variant-numeric:lining-nums;margin:0;background:var(--plum);color:var(--text);font:300 1.0625rem/1.7 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 .intro-on body{overflow:hidden}
+:root{color-scheme:only light;-webkit-tap-highlight-color:transparent}
+.intro-on,.intro-on body{overscroll-behavior:none}
+.intro{touch-action:none}
 h1,h2,h3,h4{font-family:var(--serif);font-weight:500;line-height:1.15;margin:0}
 p{margin:0 0 1em}
 a{color:inherit}
@@ -1786,7 +1790,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
       ctx.fillText(label, w / 2, h / 2);
     };
     paint();
-    addEventListener("resize", function () { if (!done) paint(); });
+    addEventListener("resize", function () { if (!done && Math.round(cv.width / Math.min(devicePixelRatio || 1, 2)) !== box.offsetWidth) paint(); });
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(paint);
     doc.addEventListener("click", function (e) { if (e.target.closest("[data-langs] button")) setTimeout(paint, 30); });
     var scratchAt = function (x, y) {
@@ -1921,7 +1925,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
     var cv = $("fireworks"), ctx = cv.getContext("2d"), parts = [], on = false, last = 0, raf;
     if (reduce || !ctx) return;
     var size = function () { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; };
-    size(); addEventListener("resize", size);
+    size(); addEventListener("resize", function () { if (cv.width !== cv.offsetWidth || cv.height !== cv.offsetHeight) size(); });
     var burst = function () {
       var x = rnd(.12, .88) * cv.width, y = rnd(.1, .45) * cv.height, col = ["#F3DDA0", "#F59AB8", "#E9C46A", "#FFD6E0"][Math.floor(rnd(0, 4))];
       for (var i = 0; i < 46; i++) { var a = i / 46 * Math.PI * 2, s = rnd(.6, 2.2); parts.push({ x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 1, col: col }); }
@@ -1963,8 +1967,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
   var intro = $("intro"), scene = $("scene"), outside = [$("main")];
   if (root.classList.contains("intro-on")) {
     outside.forEach(function (n) { n.inert = true; n.setAttribute("aria-hidden", "true"); });
+    var fitW = 0, fitH = 0;
     var fit = function () {
-      var W = innerWidth, H = innerHeight, a = W / H, reqW = 660, reqH = 770, vw, vh;
+      var W = innerWidth, H = innerHeight, a = W / H, reqW = 660, reqH = 770, vw, vh; fitW = W; fitH = H;
       if (!W || !H) return;   // hidden or zero-size tab: wait for a real size
       if (a > reqW / reqH) { vh = reqH; vw = vh * a; } else { vw = reqW; vh = vw / a; }
       scene.setAttribute("viewBox", (600 - vw / 2).toFixed(1) + " " + (400 - vh / 2).toFixed(1) + " " + vw.toFixed(1) + " " + vh.toFixed(1));
@@ -1979,7 +1984,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold-sof
       intro.style.setProperty("--arch-in", (pt(769, 0).x - pt(431, 0).x).toFixed(0) + "px");
       var o = pt(600, 470); scene.style.transformOrigin = o.x + "px " + o.y + "px";
     };
-    fit(); addEventListener("resize", fit);
+    fit(); addEventListener("resize", function () { if (innerWidth === fitW && Math.abs(innerHeight - fitH) < 160) return; fit(); });
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(fit);
 
     var lit = false, done = false;
